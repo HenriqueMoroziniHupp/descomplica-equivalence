@@ -37,12 +37,12 @@
 
   
   <q-expansion-item
-      class="shadow-1 overflow-hidden"
-      style="border-radius: 30px"
-      icon="task_alt"
-      :label="`Disciplinas Aproveitadas ${reuse?.length ?? ''}`"
-      header-class="bg-teal-5 text-white text-body1"
-      expand-icon-class="text-white"
+    class="shadow-1 overflow-hidden q-mb-md"
+    style="border-radius: 30px"
+    icon="task_alt"
+    :label="`Disciplinas Aproveitadas ${reuse?.length ?? ''}`"
+    header-class="bg-teal-5 text-white text-body1"
+    expand-icon-class="text-white"
     >
     <q-list
       class="sbjects__reuse"
@@ -57,36 +57,69 @@
         v-ripple
       >{{ reuses }}</q-item>
     </template>
-    <template v-else>Sem Disciplinas para aproveitar</template>
+    <template v-else><q-banner>Sem Disciplinas para aproveitar</q-banner></template>
     </q-list>
-    </q-expansion-item>
+  </q-expansion-item>
 
+  <q-expansion-item
+    class="shadow-1 overflow-hidden q-mb-md"
+    style="border-radius: 30px"
+    icon="task_alt"
+    :label="`Disciplinas Equivalentes ${newEquivalent?.length > 0 ? newEquivalent.length : ''}`"
+    header-class="bg-amber-7 text-white text-body1"
+    expand-icon-class="text-white"
+    >
+    <q-list
+      class="sbjects__reuse"
+      bordered
+      separator
+    >
+    <template v-if="newEquivalent.length > 0">
+      <q-list
+        class="sbjects__equivalent"
+        bordered
+        separator
+      >
+      <q-item
+        v-for="equivalent in newEquivalent"
+        :key="equivalent"
+        class="bg-amber-2 items-center"
+        v-ripple
+      >{{ equivalent }}</q-item>
+    </q-list>
+    </template>
+    <template v-else><q-banner>Sem Disciplinas Equivalentes</q-banner></template>
+    </q-list>
+    
+  </q-expansion-item>
 
-  <q-list
-    class="sbjects__equivalent"
-    bordered
-    separator
+  <q-expansion-item
+    class="shadow-1 overflow-hidden"
+    style="border-radius: 30px"
+    icon="task_alt"
+    :label="`Disciplinas Eliminadas ${lostSubjects?.length ?? ''}`"
+    header-class="bg-red-4 text-white text-body1"
+    expand-icon-class="text-white"
   >
-    <q-item
-      v-for="equivalent in newEquivalent"
-      :key="equivalent"
-      class="bg-amber-2 items-center"
-      v-ripple
-    >{{ equivalent }}</q-item>
-  </q-list>
+    <template v-if="lostSubjects">
+      <q-list
+      class="sbjects__lost"
+      bordered
+      separator
+    >
+      <q-item
+        v-for="lost in lostSubjects"
+        :key="lost"
+        class="bg-red-2 items-center"
+        v-ripple
+      >{{ lost }}</q-item>
+    </q-list>
+    </template>
+    <template v-else><q-banner>Sem Disciplinas perdidas</q-banner></template>
+    
+  </q-expansion-item>
 
-  <q-list
-    class="sbjects__lost"
-    bordered
-    separator
-  >
-    <q-item
-      v-for="lost in lostSubjects"
-      :key="lost"
-      class="bg-red-2 items-center"
-      v-ripple
-    >{{ lost }}</q-item>
-  </q-list>
+
 </template>
 
 <script setup lang="ts">
@@ -223,6 +256,7 @@ const oldEquivalents = computed(() => subjectsCompleted.value?.filter(({equivale
 const newEquivalent = computed(() => newCurriculum?.filter(newItem => subjectsCompleted.value?.some(oldItem => (oldItem.equivalent && oldItem.equivalent === newItem.equivalent))).map(newItem => newItem.label))
 
 const reuse = computed(() => subjectsCompleted.value?.filter(subject => subject.reuse).map(({ label }) => label))
+
 </script>
 
 <style scoped lang="scss">
